@@ -9,6 +9,9 @@ on:
 
 jobs:
   build:
+    strategy:
+      matrix:
+        repo: ['wlaunchELF', 'Open-PS2-Loader']
     runs-on: ubuntu-latest
   
     steps:
@@ -19,10 +22,10 @@ jobs:
         export DISPATCH_ACTION="$(echo run_build)"
         echo "::set-env name=NEW_DISPATCH_ACTION::$DISPATCH_ACTION"
         
-    - name: Repository test Dispatch to wlaunchELF
+    - name: Dispatch to organization repositories
       uses: peter-evans/repository-dispatch@v1
       with:
-        repository: ${{ github.repository_owner }}/wlaunchELF
+        repository: ${{ github.repository_owner }}/${{ matrix.repo }}
         token: ${{ secrets.DISPATCH_TOKEN }}
         event-type: ${{ env.NEW_DISPATCH_ACTION }}
         client-payload: '{"ref": "${{ github.ref }}"}'
