@@ -1,4 +1,4 @@
-name: CI-Docker
+name: CI-Dispatch
 
 on:
   push:
@@ -11,7 +11,7 @@ jobs:
   build:
     strategy:
       matrix:
-        repo: ['wlaunchELF', 'Open-PS2-Loader']
+        repo: ['wlaunchELF', 'Open-PS2-Loader', 'isjpcm', 'Fceumm-PS2']
     runs-on: ubuntu-latest
   
     steps:
