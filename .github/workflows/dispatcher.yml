@@ -21,7 +21,6 @@ jobs:
       run: |
         export DISPATCH_ACTION="$(echo run_build)"
         echo "NEW_DISPATCH_ACTION=$DISPATCH_ACTION" >> $GITHUB_ENV
-
     - name: Dispatch to organization repositories
       if: ${{ github.event_name }} != 'repository_dispatch'
       uses: peter-evans/repository-dispatch@v1
