@@ -22,10 +22,25 @@ jobs:
         export DISPATCH_ACTION="$(echo run_build)"
         echo "NEW_DISPATCH_ACTION=$DISPATCH_ACTION" >> $GITHUB_ENV
 
+    - name: "create payload with parent payload"
+      if: ${{ github.event_name }} == 'repository_dispatch'
+      run: |
+        export REPO_PAYLOAD="$(echo {\"ref\": \"${{ github.ref }}\", \"parent\": \"${{ github.repository }}\", \"parent_sha\": \"${{ steps.slug.outputs.sha8 }}\"})"
+        echo "NEW_REPO_PAYLOAD=$REPO_PAYLOAD" >> $GITHUB_ENV
+
+    - name: "create payload with parent payload"
+      if: ${{ github.event_name }} != 'repository_dispatch'
+      run: |
+        export REPO_PAYLOAD="$(echo {\"ref\": \"${{ github.ref }}\"})"
+        echo "NEW_REPO_PAYLOAD=$REPO_PAYLOAD" >> $GITHUB_ENV
+
+    - name: test
+      run: echo new payload is ${{  env.NEW_REPO_PAYLOAD }}
+
     - name: Dispatch to organization repositories
       uses: peter-evans/repository-dispatch@v1
       with:
         repository: ${{ github.repository_owner }}/${{ matrix.repo }}
         token: ${{ secrets.DISPATCH_TOKEN }}
         event-type: ${{ env.NEW_DISPATCH_ACTION }}
-        client-payload: '{"ref": "${{ github.ref }}"}'
+        client-payload: '${{  env.NEW_REPO_PAYLOAD }}'
